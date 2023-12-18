@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -25,6 +27,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,8 +46,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column {
                         SearchBar()
+                        AlignYourBodyElement(drawable = R.drawable.yoga, text = "Perfect", modifier = Modifier.padding(8.dp))
                         FavouriteCollectionCard(text="What nature does." , drawable = R.drawable.nature,
                             modifier = Modifier.padding( 10.dp))
+
                     }
 
 //                    Greeting("Android")
@@ -141,3 +146,36 @@ fun FavouriteCollectionCardPreview (){
         )
     }
 }
+
+@Composable
+fun AlignYourBodyElement(
+    @DrawableRes drawable: Int,
+    text: String,
+    modifier: Modifier = Modifier
+){
+    Column (modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Image(
+            painter = painterResource(drawable),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(88.dp)
+                .clip(CircleShape)
+        )
+        Text(
+            text = text,
+            modifier = Modifier.paddingFromBaseline(top = 24.dp, bottom = 8.dp),
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
+@Preview
+@Composable
+fun AlignYourBodyElementPreview (){
+    LifestyleAppTheme {
+        AlignYourBodyElement(drawable = R.drawable.yoga, text = "Perfect", modifier = Modifier.padding(8.dp))
+    }
+}
+
