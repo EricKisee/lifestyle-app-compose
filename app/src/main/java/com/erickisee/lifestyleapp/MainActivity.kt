@@ -38,14 +38,14 @@ import androidx.compose.material3.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
-//import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.TextFieldDefaults
-//import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-//import androidx.compose.material3.windowsizeclass.WindowSizeClass
-//import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-//import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,16 +58,49 @@ import androidx.compose.ui.unit.dp
 import com.erickisee.lifestyleapp.ui.theme.LifestyleAppTheme
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LifestyleAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    HomeScreen()
-                }
+            val windowSizeClass = calculateWindowSizeClass(activity = this)
+            MyApp(windowSize = windowSizeClass)
+        }
+    }
+}
+
+@Composable
+fun MyApp(windowSize: WindowSizeClass){
+    when (windowSize.widthSizeClass){
+        WindowWidthSizeClass.Compact->{
+            MyAppPotrait()
+        }
+        WindowWidthSizeClass.Medium->{
+            MyAppLandscape()
+        }
+        WindowWidthSizeClass.Expanded->{
+            MyAppLandscape()
+        }
+    }
+}
+
+@Composable
+fun MyAppPotrait () {
+    LifestyleAppTheme {
+        Scaffold (
+            bottomBar = { BottomNavigation()}
+        ) {
+            padding-> HomeScreen(Modifier.padding(padding))
+        }
+    }
+}
+
+@Composable
+fun MyAppLandscape() {
+    LifestyleAppTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            Row {
+                AppNavigationRail()
+                HomeScreen()
             }
         }
     }
@@ -85,6 +118,73 @@ fun HomeScreen(modifier: Modifier=Modifier){
             FavouriteCollectionGrid()
         }
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+fun BottomNavigation(modifier: Modifier=Modifier){
+    NavigationBar(
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ) {
+        NavigationBarItem(
+            selected = true,
+            onClick = {},
+            icon = {
+                Icon(imageVector = Icons.Default.Spa,
+                    contentDescription = null)
+            },
+            label = {
+                Text(text = stringResource(id = R.string.bottom_navigation_home))
+            })
+        NavigationBarItem(
+            selected = false,
+            onClick = {},
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = null
+                )
+            },
+            label = {
+                Text(text = stringResource(id = R.string.bottom_navigation_profile))
+            }
+            )
+    }
+}
+
+@Composable
+fun AppNavigationRail(modifier: Modifier = Modifier){
+    NavigationRail (
+        modifier = modifier.padding(start=8.dp,end=8.dp),
+        containerColor = MaterialTheme.colorScheme.background) {
+            Column (
+                modifier = modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                NavigationRailItem(
+                    selected = true,
+                    onClick = {},
+                    icon = {
+                        Icon(imageVector = Icons.Default.Spa,
+                        contentDescription = null)
+                    },
+                    label = {Text(stringResource(id = R.string.bottom_navigation_home))}
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                NavigationRailItem(
+                    selected = false,
+                    onClick = {},
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = null
+                        )
+                    }
+                )
+
+            }
     }
 }
 
